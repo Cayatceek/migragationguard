@@ -27,7 +27,10 @@ public final class SqlStatementSplitter {
         for (int i = 0; i < sql.length(); i++) {
             char c = sql.charAt(i);
             char next = i + 1 < sql.length() ? sql.charAt(i + 1) : '\0';
-            if (startLine < 0 && !Character.isWhitespace(c) && c != ';') startLine = line;
+            if (startLine < 0 && state == State.NORMAL && !Character.isWhitespace(c)
+                && c != ';' && !(c == '-' && next == '-') && !(c == '/' && next == '*')) {
+                startLine = line;
+            }
 
             if (state == State.NORMAL) {
                 if (c == ';') {
