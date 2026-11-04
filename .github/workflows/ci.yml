@@ -1,7 +1,7 @@
 name: Java CI
 on:
   push:
-    branches: [main, "feat/**"]
+    branches: [main, "feat/**", "audit/**"]
   pull_request:
 permissions:
   contents: read
