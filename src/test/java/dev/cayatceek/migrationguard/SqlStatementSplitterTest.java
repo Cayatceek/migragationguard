@@ -21,6 +21,15 @@ class SqlStatementSplitterTest {
     }
 
     @Test
+    void supportsPostgresqlNestedBlockComments() {
+        String sql = "/* outer /* DROP TABLE accounts; */ DROP TABLE users; */ SELECT 1;";
+        var parts = SqlStatementSplitter.split(sql);
+        assertEquals(1, parts.size());
+        assertEquals("SELECT 1", parts.getFirst().normalized().trim());
+        assertTrue(MigrationAnalyzer.analyze("V1.sql", sql).isEmpty());
+    }
+
+    @Test
     void handlesEscapedQuotesAndNestedLineBreaks() {
         var parts = SqlStatementSplitter.split("SELECT 'it''s; here';\nDELETE FROM x;");
         assertEquals(2, parts.size());

@@ -23,6 +23,7 @@ public final class SqlStatementSplitter {
         int startLine = -1;
         State state = State.NORMAL;
         String dollarTag = null;
+        int blockDepth = 0;
 
         for (int i = 0; i < sql.length(); i++) {
             char c = sql.charAt(i);
@@ -43,6 +44,7 @@ public final class SqlStatementSplitter {
                     state = State.LINE_COMMENT;
                 } else if (c == '/' && next == '*') {
                     state = State.BLOCK_COMMENT;
+                    blockDepth = 1;
                 } else if (c == '\'') {
                     state = State.SINGLE;
                 } else if (c == '"') {
@@ -61,11 +63,18 @@ public final class SqlStatementSplitter {
                 normalized.append(c == '\n' ? '\n' : ' ');
                 if (state == State.LINE_COMMENT && c == '\n') {
                     state = State.NORMAL;
+                } else if (state == State.BLOCK_COMMENT && c == '/' && next == '*') {
+                    original.append(next);
+                    normalized.append(' ');
+                    i++;
+                    blockDepth++;
                 } else if (state == State.BLOCK_COMMENT && c == '*' && next == '/') {
                     original.append(next);
                     normalized.append(' ');
                     i++;
-                    state = State.NORMAL;
+                    if (--blockDepth == 0) {
+                        state = State.NORMAL;
+                    }
                 } else if (state == State.SINGLE && c == '\'') {
                     if (next == '\'') {
                         original.append(next);
