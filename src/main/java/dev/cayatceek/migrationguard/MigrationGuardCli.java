@@ -24,12 +24,12 @@ public final class MigrationGuardCli {
         }
         List<Finding> findings = new ArrayList<>();
         for (String argument : args) {
-            Path path = Path.of(argument);
             try {
+                Path path = Path.of(argument);
                 String sql = Files.readString(path, StandardCharsets.UTF_8);
                 findings.addAll(MigrationAnalyzer.analyze(path.toString(), sql));
-            } catch (IOException | SecurityException ex) {
-                err.println("Cannot read " + path + ": " + ex.getClass().getSimpleName());
+            } catch (IOException | SecurityException | java.nio.file.InvalidPathException ex) {
+                err.println("Cannot read migration file: " + ex.getClass().getSimpleName());
                 return 1;
             }
         }

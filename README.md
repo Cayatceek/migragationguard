@@ -30,7 +30,7 @@ V12__add_columns.sql:1 [HIGH] PG003: New NOT NULL column without DEFAULT may fai
 - PG006: `CREATE INDEX CONCURRENTLY` requires non-transactional migration
 - PG007/PG008: unconditional `DELETE` / `UPDATE`
 
-The lexer respects single/double quoted text, comments and dollar-quoted bodies for statement splitting. Rules are **heuristic**: they may miss hazards in advanced SQL and produce false positives in procedural statements, complex ALTER TABLE clauses or unconventional dialects. Inspect findings, don't auto-edit SQL.
+The lexer respects single/double quoted text, nested PostgreSQL block comments and dollar-quoted bodies for statement splitting. Rules are **heuristic**: they may miss hazards in advanced SQL and produce false positives in procedural statements, complex ALTER TABLE clauses or unconventional dialects. Inspect findings, don't auto-edit SQL.
 
 ## Roadmap
 

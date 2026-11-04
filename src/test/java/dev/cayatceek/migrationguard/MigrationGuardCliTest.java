@@ -26,6 +26,16 @@ class MigrationGuardCliTest {
     }
 
     @Test
+    void invalidPathsReturnUserErrorInsteadOfCrashing() {
+        var out = new PrintStream(new ByteArrayOutputStream());
+        var errors = new ByteArrayOutputStream();
+        var err = new PrintStream(errors);
+        int code = MigrationGuardCli.run(new String[] {"broken\0name.sql"}, out, err);
+        assertEquals(1, code);
+        assertTrue(errors.toString().contains("InvalidPathException"));
+    }
+
+    @Test
     void cleanSqlAndInvalidArguments() throws Exception {
         Path file = Files.writeString(dir.resolve("V2.sql"), "SELECT 1;");
         var out = new PrintStream(new ByteArrayOutputStream());
